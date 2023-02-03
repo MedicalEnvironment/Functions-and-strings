@@ -1,30 +1,79 @@
 #include <iostream>
-#include <string>
-using namespace std;
+
+void CrossZero(std::string text, int *answerVictoryCross, int *answerVictoryZero, int *answerCross, int *answerZero, int *answerPoint, bool *answerGood){
+    bool good = true;
+    int cross = 0, zero = 0, point = 0, RowCross = 0, RoWZero = 0, VictoryCross = 0, VictoryZero = 0;
+
+    for(int i = 0; i < text.length(); i++){
+        if(text.length() == 3){
+            if(text[i] == 'X'){
+                cross++;
+                RowCross++;
+            }else if(text[i] == 'O'){
+                zero++;
+                RoWZero++;
+            }else if(text[i] == '.'){
+                point++;
+            }else{
+                good = false;
+                break;
+            }
+        }else{
+            good = false;
+            break;
+        }
+    }
+    if(RowCross == 3){
+        VictoryCross++;
+    }else if (RoWZero == 3){
+        VictoryZero++;
+    }
+
+    (*answerVictoryCross) = VictoryCross;
+    (*answerVictoryZero)= VictoryZero;
+    (*answerCross) = cross;
+    (*answerZero) = zero;
+    (*answerPoint) = point;
+    (*answerGood) = good;
+
+}
 
 int main() {
+    std::string TopRow, MiddleRow, LowerRow, answer;
+    std::cout << "Enter cross and zero\n";
+    std::cin >> TopRow >> MiddleRow >> LowerRow;
+    bool TopRowGood = true, MiddleRowGood = true, LowerRowGood = true;
+    int cross = 0, zero = 0, point = 0, TopRowCross = 0, TopRowZero = 0, MiddleRoWCross = 0, MiddleRowZero = 0, LowerRowCross = 0, LowerRowZero = 0, VictoryCross = 0, VictoryZero = 0, TopRowVictoryCross = 0, TopRowVictoryZero = 0, MiddleRoWVictoryCross = 0, MiddleRowVictoryZero = 0, LowerRowVictoryCross = 0, LowerRowVictoryZero = 0, TopRowPoint = 0, MiddleRowPoint = 0, LowerRowPoint = 0;
 
-    string email;
-    bool atFlag = false;
-    bool comFlag = false;
+    CrossZero(TopRow, &TopRowVictoryCross, &TopRowVictoryZero, &TopRowCross, &TopRowZero, &TopRowPoint, &TopRowGood);
+    CrossZero(MiddleRow, &MiddleRoWVictoryCross, &MiddleRowVictoryZero, &MiddleRoWCross, &MiddleRowZero, &MiddleRowPoint, &MiddleRowGood);
+    CrossZero(LowerRow, &LowerRowVictoryCross, &LowerRowVictoryZero, &LowerRowCross, &LowerRowZero, &LowerRowPoint, &LowerRowGood);
 
-    cout << "Enter email address: ";
-    cin >> email;
+    VictoryCross = TopRowVictoryCross + MiddleRoWVictoryCross + LowerRowVictoryCross;
+    VictoryZero = TopRowVictoryZero + MiddleRowVictoryZero + LowerRowVictoryZero;
+    cross = TopRowCross + MiddleRoWCross + LowerRowCross;
+    zero = TopRowZero + MiddleRowZero + LowerRowZero;
+    point = TopRowPoint + MiddleRowPoint + LowerRowPoint;
 
-    for (int c = 0; c < email.length(); c++) {
-        if (email[c] == '@')
-            atFlag = true;
-    //else if('@' > 1) {  //gotta make a statement if '@' sign more than 1 time its false and email is incorrect!
-        //atFlag = false;
+    if(TopRowGood && MiddleRowGood && LowerRowGood){
+        if((TopRow[0] == 'X' && MiddleRow[0] == 'X' && LowerRow[0] == 'X') || (TopRow[1] == 'X' && MiddleRow[1] == 'X' && LowerRow[1] == 'X') || (TopRow[2] == 'X' && MiddleRow[2] == 'X' && LowerRow[2] == 'X') || (TopRow[0] == 'X' && MiddleRow[1] == 'X' && LowerRow[2] == 'X') || (TopRow[2] == 'X' && MiddleRow[1] == 'X' && LowerRow[0] == 'X')){
+            VictoryCross++;
+        }
+        if((TopRow[0] == 'O' && MiddleRow[0] == 'O' && LowerRow[0] == 'O') || (TopRow[1] == 'O' && MiddleRow[1] == 'O' && LowerRow[1] == 'O') || (TopRow[2] == 'O' && MiddleRow[2] == 'O' && LowerRow[2] == 'O') || (TopRow[0] == 'O' && MiddleRow[1] == 'O' && LowerRow[2] == 'O') || (TopRow[2] == 'O' && MiddleRow[1] == 'O' && LowerRow[0] == 'O')){
+            VictoryZero++;
+        }
+        if(VictoryCross > 1 || VictoryZero > 1 || (VictoryCross >= 1 && VictoryZero >= 1) || (VictoryCross == 1 && zero >= cross) || (VictoryZero == 1 && cross >= zero) || (VictoryZero == 1 && cross < zero) || (VictoryCross == 1 && zero != (cross - 1) ) ){
+            answer = "Incorrect";
+        }else if(VictoryCross == 0 && VictoryZero == 0 && point >= 0){
+            answer = "Nobody";
+        }else if(VictoryCross == 1 && VictoryZero == 0){
+            answer = "Petya won";
+        }else if(VictoryCross == 0 && VictoryZero == 1){
+            answer = "Vanya won";
+        }
+    }else{
+        answer = "Incorrect";
     }
-    int size = email.length();
-    if (email.substr(size - 4, size - 1) == ".com")
-        comFlag = true;
-    if (atFlag and comFlag) {
-        cout << "Valid email address\n";
-    } else {
-        cout << "Invalid email address\n";
-    }
 
-    return 0;
+    std::cout << answer;
 }
